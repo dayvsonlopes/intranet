@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THOMPSON | Intranet</title>
+  <style>
+    :root{
+      --preto:#000000;
+      --chumbo:#484943;
+      --amarelo:#FFD900;
+      --amarelo-claro:#FFF100;
+      --branco:#FFFFFF;
+      --cinza-fundo:#F3F4F6;
+      --cinza-borda:#E5E7EB;
+      --cinza-texto:#6B7280;
+      --cinza-card:#FAFAFA;
+      --sombra:0 10px 28px rgba(0,0,0,.08);
+      --fonte:"Segoe UI", Arial, sans-serif;
+      --raio:18px;
+      --raio-sm:12px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;font-family:var(--fonte);background:var(--cinza-fundo);color:#111827}
+    a{text-decoration:none;color:inherit}
+
+    .layout{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:220px 1fr;
+    }
+
+    .sidebar{
+      background:var(--preto);
+      color:var(--branco);
+      display:flex;
+      flex-direction:column;
+      position:sticky;
+      top:0;
+      height:100vh;
+      border-right:1px solid rgba(255,255,255,.08);
+    }
+
+    .sidebar-logo{
+      padding:18px 18px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .sidebar-logo img,
+    .footer-logo img{
+      display:block;
+      width:150px;
+      max-width:100%;
+      height:auto;
+    }
+
+    .menu{
+      padding:14px 12px 8px;
+    }
+
+    .menu h4{
+      margin:18px 12px 10px;
+      color:rgba(255,255,255,.55);
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:700;
+    }
+
+    .menu-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:13px 12px;
+      border-radius:12px;
+      margin-bottom:6px;
+      color:rgba(255,255,255,.92);
+      font-size:15px;
+      font-weight:600;
+      border:1px solid transparent;
+    }
+
+    .menu-item:hover{background:rgba(255,255,255,.05)}
+    .menu-item.active{
+      color:var(--amarelo);
+      background:rgba(255,217,0,.08);
+      border-color:rgba(255,217,0,.20);
+      box-shadow:inset 4px 0 0 var(--amarelo);
+    }
+
+    .menu-icon{
+      width:18px;
+      text-align:center;
+      font-size:16px;
+    }
+
+    .main{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+
+    .topbar{
+      background:var(--preto);
+      color:var(--branco);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:14px 24px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .topnav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:22px;
+      align-items:center;
+    }
+
+    .topnav a{
+      color:rgba(255,255,255,.88);
+      font-size:14px;
+      font-weight:600;
+      padding-bottom:10px;
+      border-bottom:3px solid transparent;
+    }
+
+    .topnav a.active{
+      color:var(--branco);
+      border-bottom-color:var(--amarelo);
+    }
+
+    .profile{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      padding:7px 10px;
+      border-radius:14px;
+    }
+
+    .avatar{
+      width:38px;height:38px;border-radius:50%;
+      background:linear-gradient(135deg,#E0B487,#C48660);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:800;font-size:13px;
+      flex-shrink:0;
+    }
+
+    .profile small{display:block;color:rgba(255,255,255,.65);font-size:11px}
+
+    .content{padding:20px}
+
+    .panel{
+      background:var(--branco);
+      border:1px solid var(--cinza-borda);
+      border-radius:22px;
+      box-shadow:var(--sombra);
+      padding:22px;
+    }
+
+    .hero{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      margin-bottom:18px;
+    }
+
+    .hero h1{
+      margin:0 0 4px;
+      font-size:32px;
+      line-height:1.1;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--cinza-texto);
+      font-size:15px;
+    }
+
+    .hero .date{
+      color:var(--cinza-texto);
+      font-weight:600;
+      font-size:14px;
+      white-space:nowrap;
+      padding-top:8px;
+    }
+
+    .section-title{
+      margin:6px 0 14px;
+      font-size:18px;
+    }
+
+    .quick-grid{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .quick-card{
+      background:linear-gradient(180deg,#1B1B1E,#101114);
+      color:var(--branco);
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      min-height:88px;
+      padding:14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .quick-icon{
+      width:50px;height:50px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--amarelo);
+      font-size:22px;
+      flex-shrink:0;
+    }
+
+    .quick-card strong{
+      display:block;
+      font-size:14px;
+      line-height:1.25;
+      font-weight:700;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1.2fr 1fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+
+    .grid-3{
+      display:grid;
+      grid-template-columns:1.1fr 1fr 1fr;
+      gap:18px;
+    }
+
+    .card{
+      background:var(--branco);
+      border:1px solid var(--cinza-borda);
+      border-radius:18px;
+      box-shadow:0 6px 18px rgba(0,0,0,.05);
+      padding:16px;
+      min-width:0;
+    }
+
+    .card-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+    }
+
+    .card-header h3{
+      margin:0;
+      font-size:17px;
+    }
+
+    .card-header a{
+      color:#B88600;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .contacts-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .contact-item{
+      display:flex;
+      gap:12px;
+      padding:12px;
+      border:1px solid var(--cinza-borda);
+      border-radius:14px;
+      background:#fff;
+      align-items:flex-start;
+    }
+
+    .thumb{
+      width:46px;height:46px;border-radius:12px;
+      background:linear-gradient(135deg,#D8D8D8,#B7B7B7);
+      display:flex;align-items:center;justify-content:center;
+      color:#4b5563;font-weight:800;font-size:13px;
+      flex-shrink:0;
+    }
+
+    .contact-item strong{display:block;font-size:14px;margin-bottom:2px}
+    .contact-item span,.contact-item small{
+      display:block;font-size:12px;color:var(--cinza-texto);line-height:1.35;
+    }
+
+    .launch-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .launch-item{
+      border:1px solid var(--cinza-borda);
+      border-radius:14px;
+      padding:10px;
+      display:grid;
+      grid-template-columns:60px 110px 1fr auto;
+      gap:12px;
+      align-items:center;
+    }
+
+    .launch-date{
+      border-radius:12px;
+      background:var(--cinza-card);
+      border:1px solid var(--cinza-borda);
+      text-align:center;
+      padding:10px 6px;
+      font-weight:800;
+      line-height:1.05;
+      color:#374151;
+    }
+
+    .launch-date small{
+      display:block;
+      color:var(--cinza-texto);
+      margin-top:4px;
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .launch-image{
+      height:68px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#D7C4A2,#9D7F55);
+    }
+
+    .launch-copy strong{display:block;font-size:14px;margin-bottom:4px}
+    .launch-copy p{margin:0;color:var(--cinza-texto);font-size:12px;line-height:1.4}
+
+    .tag{
+      padding:8px 10px;
+      border-radius:999px;
+      background:#F8EBAE;
+      color:#775700;
+      font-weight:800;
+      font-size:11px;
+      white-space:nowrap;
+    }
+
+    .force-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .force-item{
+      padding:12px;
+      border:1px solid var(--cinza-borda);
+      border-radius:14px;
+      background:#fff;
+    }
+
+    .force-item strong{display:block;font-size:14px;margin-bottom:3px}
+    .force-item span,.force-item small{
+      display:block;font-size:12px;color:var(--cinza-texto);line-height:1.35;
+    }
+
+    .onboarding-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+
+    .mini-tile{
+      border:1px solid var(--cinza-borda);
+      border-radius:14px;
+      padding:12px;
+      text-align:center;
+      background:#fff;
+    }
+
+    .mini-illustration{
+      height:70px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#ECECEC,#D7D7D7);
+      margin-bottom:10px;
+    }
+
+    .mini-tile strong{display:block;font-size:14px;margin-bottom:6px}
+    .mini-tile p{margin:0 0 10px;color:var(--cinza-texto);font-size:12px;line-height:1.35}
+    .mini-button{
+      background:#111827;color:#fff;border:none;border-radius:10px;
+      padding:10px 14px;font-weight:700;font-family:var(--fonte);cursor:pointer;
+    }
+
+    .birthdays{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .birthday-box{
+      border:1px solid var(--cinza-borda);
+      border-radius:14px;
+      overflow:hidden;
+    }
+
+    .birthday-head{
+      background:var(--cinza-card);
+      border-bottom:1px solid var(--cinza-borda);
+      text-align:center;
+      padding:10px 12px;
+      font-size:13px;
+      font-weight:800;
+    }
+
+    .birthday-box ul{margin:0;padding:8px 10px;list-style:none}
+    .birthday-box li{
+      display:grid;
+      grid-template-columns:18px 1fr auto;
+      gap:10px;
+      align-items:center;
+      padding:8px 0;
+      border-bottom:1px solid #f0f0f0;
+      font-size:12px;
+    }
+    .birthday-box li:last-child{border-bottom:none}
+    .muted{color:var(--cinza-texto)}
+
+    .birthday-footer{
+      margin-top:10px;
+      border:1px solid var(--cinza-borda);
+      border-radius:14px;
+      padding:12px;
+      background:#FFF9E6;
+      color:#5B4800;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      font-size:12px;
+    }
+
+    .comunicados-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .comunicado-item{
+      display:grid;
+      grid-template-columns:116px 1fr 46px;
+      gap:12px;
+      align-items:center;
+      border:1px solid var(--cinza-borda);
+      border-radius:14px;
+      padding:10px;
+    }
+
+    .comunicado-img{
+      height:66px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#1B1B1D,#44340A);
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .comunicado-img img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .comunicado-item strong{display:block;font-size:14px;margin-bottom:4px}
+    .comunicado-item p{margin:0;color:var(--cinza-texto);font-size:12px;line-height:1.4}
+
+    .mini-date{
+      background:var(--cinza-card);
+      border:1px solid var(--cinza-borda);
+      border-radius:12px;
+      text-align:center;
+      padding:8px 4px;
+      font-weight:800;
+      color:#374151;
+      font-size:11px;
+      line-height:1.15;
+    }
+
+    footer{
+      background:var(--preto);
+      color:rgba(255,255,255,.78);
+      border-top:1px solid rgba(255,255,255,.08);
+      padding:14px 24px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+      font-size:12px;
+    }
+
+    @media (max-width: 1450px){
+      .quick-grid{grid-template-columns:repeat(4,1fr)}
+      .grid-3{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 1150px){
+      .layout{grid-template-columns:1fr}
+      .sidebar{display:none}
+      .grid-2{grid-template-columns:1fr}
+      .contacts-grid,.force-grid{grid-template-columns:1fr}
+      .quick-grid{grid-template-columns:repeat(3,1fr)}
+      .content{padding:14px}
+    }
+
+    @media (max-width: 760px){
+      .topnav{gap:14px}
+      .hero{flex-direction:column}
+      .quick-grid{grid-template-columns:repeat(2,1fr)}
+      .onboarding-grid{grid-template-columns:1fr}
+      .birthdays{grid-template-columns:1fr}
+      .launch-item{grid-template-columns:52px 1fr;grid-template-areas:"date text" "img text";}
+      .launch-date{grid-area:date}
+      .launch-image{grid-area:img}
+      .launch-copy{grid-area:text}
+      .tag{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">
+        <a href="#">
+          <img src="https://thompsonferramentas.com.br/wp-content/uploads/2021/01/logo-thompson.svg" alt="THOMPSON" style="height:25px;">
+        </a>
+      </div>
+
+      <nav class="menu">
+        <a class="menu-item active" href="#"><span class="menu-icon">⌂</span><span>Início</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">☑</span><span>Comercial</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">◫</span><span>Marketing</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">↻</span><span>Ecommerce</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">⌘</span><span>ADV / Inteligência Comercial</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">⚙</span><span>Logística</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">☏</span><span>Experiência do Cliente</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">☒</span><span>Produção</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">▤</span><span>Financeiro</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">◉</span><span>RH</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">◧</span><span>TI</span></a>
+      </nav>
+
+      <div class="menu">
+        <h4>Acesso Rápido</h4>
+        <a class="menu-item" href="#"><span class="menu-icon">★</span><span>Favoritos</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">▦</span><span>Aplicativos</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">▣</span><span>Meus Documentos</span></a>
+        <a class="menu-item" href="#"><span class="menu-icon">◌</span><span>Central de Ajuda</span></a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <nav class="topnav">
+          <a class="active" href="#">Início</a>
+          <a href="#">Comercial</a>
+          <a href="#">Marketing</a>
+          <a href="#">Ecommerce</a>
+          <a href="#">ADV / Inteligência Comercial</a>
+          <a href="#">Logística</a>
+          <a href="#">Experiência do Cliente</a>
+          <a href="#">Produção</a>
+          <a href="#">Financeiro</a>
+          <a href="#">RH</a>
+          <a href="#">TI</a>
+        </nav>
+
+        <div class="profile">
+          <div style="font-size:18px;">🔔</div>
+          <div style="font-size:18px;">?</div>
+          <div class="avatar">DL</div>
+          <div>
+            <div style="font-weight:700;font-size:14px;">Dayvson Lopes</div>
+            <small>Gerente de Marketing e Ecommerce</small>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="panel">
+          <div class="hero">
+            <div>
+              <h1>Bem-vindo à Intranet THOMPSON</h1>
+              <p>Portal interno com acessos, contatos, serviços, comunicados e informações úteis para o dia a dia.</p>
+            </div>
+            <div class="date">08/05/2026</div>
+          </div>
+
+          <h2 class="section-title">Acesso Rápido</h2>
+          <div class="quick-grid">
+            <div class="quick-card"><div class="quick-icon">👥</div><strong>Contatos Internos</strong></div>
+            <div class="quick-card"><div class="quick-icon">🤝</div><strong>Contatos Representantes “Força de Vendas”</strong></div>
+            <div class="quick-card"><div class="quick-icon">👕</div><strong>Solicitação de Uniforme</strong></div>
+            <div class="quick-card"><div class="quick-icon">🖥</div><strong>Chamado TI</strong></div>
+            <div class="quick-card"><div class="quick-icon">🧰</div><strong>Solicitação Expositores e Brindes</strong></div>
+            <div class="quick-card"><div class="quick-icon">✈</div><strong>Lançamentos Central de Viagens</strong></div>
+            <div class="quick-card"><div class="quick-icon">🎫</div><strong>Solicitação de Passagens</strong></div>
+            <div class="quick-card"><div class="quick-icon">📣</div><strong>Input Lançamento</strong></div>
+            <div class="quick-card"><div class="quick-icon">📦</div><strong>Consulta Rastreio</strong></div>
+            <div class="quick-card"><div class="quick-icon">🧑‍💼</div><strong>Solicitar Vaga RH</strong></div>
+            <div class="quick-card"><div class="quick-icon">🚀</div><strong>Onboarding</strong></div>
+            <div class="quick-card"><div class="quick-icon">🎓</div><strong>Academia THOMPSON de Conhecimento</strong></div>
+            <div class="quick-card"><div class="quick-icon">🗂</div><strong>Organograma</strong></div>
+            <div class="quick-card"><div class="quick-icon">📢</div><strong>Comunicados Internos</strong></div>
+          </div>
+
+          <div class="grid-2">
+            <section class="card">
+              <div class="card-header">
+                <h3>Contatos Internos</h3>
+                <a href="#">Ver Todos</a>
+              </div>
+
+              <div class="contacts-grid">
+                <div class="contact-item"><div class="thumb">AB</div><div><strong>Antonio Biaze</strong><span>Presidente</span><small>antonio.biaze@thompsonferramentas.com.br</small><small>Direção Executiva</small></div></div>
+                <div class="contact-item"><div class="thumb">FB</div><div><strong>Fernando Biaze</strong><span>Diretor Financeiro e Importação</span><small>fernando.biaze@thompsonferramentas.com.br</small><small>Financeiro / Importação</small></div></div>
+                <div class="contact-item"><div class="thumb">RB</div><div><strong>Renato Biaze</strong><span>Diretor Comercial e Logística</span><small>renato.biaze@thompsonferramentas.com.br</small><small>Comercial / Logística</small></div></div>
+                <div class="contact-item"><div class="thumb">DL</div><div><strong>Dayvson Lopes</strong><span>Gerente de Marketing e Ecommerce</span><small>dayvson.lopes@thompsonferramentas.com.br</small><small>Marketing / Ecommerce</small></div></div>
+                <div class="contact-item"><div class="thumb">EP</div><div><strong>Érick Paes</strong><span>Supervisor de Trade</span><small>erick.paes@thompsonferramentas.com.br</small><small>Trade Marketing</small></div></div>
+                <div class="contact-item"><div class="thumb">MG</div><div><strong>Michelle Gomes</strong><span>Gestora Nacional - Atacado e Varejo</span><small>michelle.gomes@thompsonferramentas.com.br</small><small>Brasil</small></div></div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <h3>Últimos Lançamentos</h3>
+                <a href="#">Ver Todos</a>
+              </div>
+
+              <div class="launch-list">
+                <div class="launch-item">
+                  <div class="launch-date">08<small>MAI</small></div>
+                  <div class="launch-image"></div>
+                  <div class="launch-copy">
+                    <strong>Linha Premium liberada para comunicação</strong>
+                    <p>Materiais já disponíveis para time comercial, regionais, representantes e e-commerce em 08/05/2026.</p>
+                  </div>
+                  <div class="tag">Produto</div>
+                </div>
+
+                <div class="launch-item">
+                  <div class="launch-date">08<small>MAI</small></div>
+                  <div class="launch-image" style="background:linear-gradient(135deg,#A66F4E,#E6C9A7)"></div>
+                  <div class="launch-copy">
+                    <strong>Input de lançamento em validação</strong>
+                    <p>ADV, Marketing e Comercial devem concluir atributos, fotos e materiais de apoio até 08/05/2026.</p>
+                  </div>
+                  <div class="tag">Processo</div>
+                </div>
+
+                <div class="launch-item">
+                  <div class="launch-date">06<small>MAI</small></div>
+                  <div class="launch-image" style="background:linear-gradient(135deg,#8B9C74,#D2E0BB)"></div>
+                  <div class="launch-copy">
+                    <strong>Campanha comercial Maio</strong>
+                    <p>Materiais para vitrine, WhatsApp e mídia liberados para apoiar ações regionais e clientes estratégicos.</p>
+                  </div>
+                  <div class="tag">Campanha</div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="grid-2" style="margin-bottom:18px;">
+            <section class="card">
+              <div class="card-header">
+                <h3>Força de Vendas / Regionais</h3>
+                <a href="#">Ver Todos</a>
+              </div>
+
+              <div class="force-grid">
+                <div class="force-item"><strong>Giovana Lima</strong><span>CO-NO | CO / NO</span><small>Gestora Regional - Centro-Oeste e Norte</small></div>
+                <div class="force-item"><strong>Gabriela Cevidanes</strong><span>MG-ES | MG-ES</span><small>Promotor Regional Minas</small></div>
+                <div class="force-item"><strong>Isaac Lemos</strong><span>NE | NE</span><small>Gestor Regional - Nordeste</small></div>
+                <div class="force-item"><strong>David Aguiar</strong><span>NE | NE</span><small>Merchan Regional</small></div>
+                <div class="force-item"><strong>Edson Patteli</strong><span>RJ-SP | SP / RJ</span><small>Merchan Regional</small></div>
+                <div class="force-item"><strong>Ana Oliveira</strong><span>RJ-SP | SP / RJ</span><small>Gestora Regional - São Paulo e Rio de Janeiro</small></div>
+                <div class="force-item"><strong>Kamilla Jesus</strong><span>S | S</span><small>Gestor Regional - Sul</small></div>
+                <div class="force-item"><strong>Michelle Gomes</strong><span>BR | BR</span><small>Gestora Nacional - Atacado e Varejo</small></div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <h3>Serviços em Destaque</h3>
+                <a href="#">Ver Todos</a>
+              </div>
+
+              <div class="force-grid">
+                <div class="force-item"><strong>Solicitação de Uniforme</strong><span>RH</span><small>Fluxo para novos pedidos e reposição.</small></div>
+                <div class="force-item"><strong>Chamado TI</strong><span>TI</span><small>Abertura de suporte técnico e manutenção.</small></div>
+                <div class="force-item"><strong>Solicitação Expositores e Brindes</strong><span>Marketing</span><small>Envio de materiais para ações de campo.</small></div>
+                <div class="force-item"><strong>Central de Viagens</strong><span>Administrativo</span><small>Pedidos, aprovações e histórico de viagens.</small></div>
+                <div class="force-item"><strong>Consulta Rastreio</strong><span>Logística</span><small>Acompanhe entregas e movimentações.</small></div>
+                <div class="force-item"><strong>Solicitar Vaga RH</strong><span>RH</span><small>Abertura de vaga e fluxo de aprovação.</small></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="grid-3">
+            <section class="card">
+              <div class="card-header">
+                <h3>Onboarding</h3>
+                <a href="#">Ver Todos</a>
+              </div>
+
+              <div class="onboarding-grid">
+                <div class="mini-tile">
+                  <div class="mini-illustration"></div>
+                  <strong>Seja Bem-vindo</strong>
+                  <p>Conheça nossa cultura, valores e primeiros passos dentro da THOMPSON.</p>
+                  <button class="mini-button">Acessar</button>
+                </div>
+                <div class="mini-tile">
+                  <div class="mini-illustration" style="background:linear-gradient(135deg,#E4ECFF,#C4D7FF)"></div>
+                  <strong>Primeiros Passos</strong>
+                  <p>Documentos, acessos, rotina e pontos essenciais para novos colaboradores.</p>
+                  <button class="mini-button">Acessar</button>
+                </div>
+                <div class="mini-tile">
+                  <div class="mini-illustration" style="background:linear-gradient(135deg,#EAEAEA,#D7D7D7)"></div>
+                  <strong>Benefícios</strong>
+                  <p>Resumo de benefícios, políticas internas e materiais úteis de integração.</p>
+                  <button class="mini-button">Acessar</button>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <h3>Aniversariantes do Mês</h3>
+                <a href="#">Ver Todos</a>
+              </div>
+
+              <div class="birthdays">
+                <div class="birthday-box">
+                  <div class="birthday-head">Por Idade</div>
+                  <ul>
+                    <li><span>1</span><div><strong>Bruna Alves</strong><div class="muted">08/05/2026</div></div><div>27 anos</div></li>
+                    <li><span>2</span><div><strong>Lucas Silva</strong><div class="muted">12/05/2026</div></div><div>30 anos</div></li>
+                    <li><span>3</span><div><strong>Daniela Rocha</strong><div class="muted">19/05/2026</div></div><div>31 anos</div></li>
+                    <li><span>4</span><div><strong>Felipe Santos</strong><div class="muted">25/05/2026</div></div><div>32 anos</div></li>
+                  </ul>
+                </div>
+
+                <div class="birthday-box">
+                  <div class="birthday-head">Por Tempo de Casa</div>
+                  <ul>
+                    <li><span>1</span><div><strong>Claudio Mello</strong><div class="muted">08/05/2026</div></div><div>7 anos</div></li>
+                    <li><span>2</span><div><strong>Ana Costa</strong><div class="muted">15/05/2026</div></div><div>5 anos</div></li>
+                    <li><span>3</span><div><strong>Marcos Vinicius</strong><div class="muted">22/05/2026</div></div><div>4 anos</div></div><div>4 anos</div></li>
+                    <li><span>4</span><div><strong>Juliana Mendes</strong><div class="muted">28/05/2026</div></div><div>3 anos</div></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="birthday-footer">
+                <div><strong>🎂 Destaque do dia: 08/05/2026</strong><br>Bruna Alves celebra aniversário e Claudio Mello completa mais um ano de casa.</div>
+                <div style="font-size:24px;">🎈</div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-header">
+                <h3>Comunicados Internos</h3>
+                <a href="#">Ver Todos</a>
+              </div>
+
+              <div class="comunicados-list">
+                <div class="comunicado-item">
+                  <div class="comunicado-img">
+                    <img src="30_anos_ama.svg" alt="30 anos THOMPSON">
+                  </div>
+                  <div>
+                    <strong>Festa de 30 anos da THOMPSON</strong>
+                    <p>Comunicação oficial do evento será enviada com cronograma, convidados e ações comemorativas.</p>
+                  </div>
+                  <div class="mini-date">08<br>MAI</div>
+                </div>
+
+                <div class="comunicado-item">
+                  <div class="comunicado-img" style="background:linear-gradient(135deg,#95B9E8,#FFE2B2)"></div>
+                  <div>
+                    <strong>Nova política de viagens</strong>
+                    <p>Consulte as regras atualizadas para solicitação de passagens, reembolsos e aprovações.</p>
+                  </div>
+                  <div class="mini-date">06<br>MAI</div>
+                </div>
+
+                <div class="comunicado-item">
+                  <div class="comunicado-img" style="background:linear-gradient(135deg,#D7E7F2,#F7F7F7)"></div>
+                  <div>
+                    <strong>Consulta de rastreio liberada</strong>
+                    <p>Comercial e Logística já podem utilizar o novo painel unificado de acompanhamento de entregas.</p>
+                  </div>
+                  <div class="mini-date">03<br>MAI</div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        <div class="footer-logo">
+          <a href="https://thompsonferramentas.com.br" target="_blank">
+            <img src="https://thompsonferramentas.com.br/wp-content/uploads/2021/01/logo-thompson.svg" alt="THOMPSON" style="height:28px;">
+          </a>
+        </div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
